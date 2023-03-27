@@ -113,7 +113,7 @@ Suponha que, ao resolver a versão relaxada do TSP,  um \textit{solver} chegue a
     \label{fig:solucaoFrac}
 \end{figure}
 
-Se, no entanto, o somatório dos pesos das arestas fosse menor que 2, tanto \(S\) quanto \(\overline{S}\) estariam violando as restrições de \textit{subtour}, o que pode ser contornado adicionando-se a restrição \(\sum_{i \in S}\sum_{j \in \overline{S}}x_{ij} \geq 2\). Dessa forma, múltiplas restrições de \textit{subtour} podem ser adicionadas ao modelo antes mesmo de uma solução inteira ser obtida, além de aproximar o poliedro cada vez mais de sua envoltória convexa.
+Por outro lado, se o somatório dos pesos das arestas fosse menor que 2, tanto \(S\) quanto \(\overline{S}\) estariam violando as restrições de \textit{subtour}, o que pode ser contornado adicionando-se a restrição \(\sum_{i \in S}\sum_{j \in \overline{S}}x_{ij} \geq 2\). Dessa forma, múltiplas restrições de \textit{subtour} podem ser adicionadas ao modelo antes mesmo de uma solução inteira ser obtida, além de aproximar o poliedro cada vez mais de sua envoltória convexa.
 
 Conhecer o \textit{min-cut} do grafo que representa as soluções fracionárias da relaxação linear do TSP torna-se, portanto, uma vantagem.
 
