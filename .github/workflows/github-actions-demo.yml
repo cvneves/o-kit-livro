@@ -56,10 +56,8 @@ jobs:
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: ${{ env.NOW }}
-          # tag_name: ${{ steps.generate_release_tag.outputs.release_tag }}
-        release_name: Release ${{ env.NOW }}
-        # release_name: Release ${{ steps.generate_release_tag.outputs.release_tag }}
+          tag_name: ${{ steps.generate_release_tag.outputs.release_tag }}
+          release_name: Release ${{ steps.generate_release_tag.outputs.release_tag }}
         # draft: false
         # prerelease: false
 
