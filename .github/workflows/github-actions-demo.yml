@@ -1,4 +1,4 @@
-name: LateX to PDF
+name: LateX to PDF 2
 
 on:
   push:
