@@ -31,7 +31,7 @@ jobs:
           path: main.pdf
       - name: Get the version
           id: get_version
-          run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+          run: echo "::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)"
       - name: Create Release
         id: create_release
         # if: startsWith(github.ref, 'refs/tags/')
