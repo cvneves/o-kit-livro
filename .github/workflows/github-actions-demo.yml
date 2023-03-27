@@ -11,9 +11,20 @@ jobs:
         with:
           root_file: main.tex
           latexmk_shell_escape: true
-      - name: Upload PDF to the workflow tab
-        id: upload-workflow-tab
-        uses: actions/upload-artifact@v2
+            # - name: Upload PDF to the workflow tab
+            #   id: upload-workflow-tab
+            #   uses: actions/upload-artifact@v2
+            #   with:
+            #     name: output
+            #     path: main.pdf
+      - name: Upload Release
+        id: upload-release-asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: output
-          path: main.pdf
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: main.pdf
+          asset_name: main.pdf
+          asset_content_type: application/pdf
