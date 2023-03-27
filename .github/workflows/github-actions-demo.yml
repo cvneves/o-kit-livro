@@ -1,11 +1,11 @@
 name: Build LaTeX document
-  # on:
-  #   push:
-  #     branches:
-  #       - main
-  #     tags:
-  #       - "*"
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+        # on: [push]
   # on:
   # on:
   #   push:
