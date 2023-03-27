@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate release tag
         id: generate_release_tag
-        - uses: Klemensas/action-autotag@stable
+        uses: Klemensas/action-autotag@stable
         with:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         # uses: amitsingh-007/next-release-tag@v1.0.0
