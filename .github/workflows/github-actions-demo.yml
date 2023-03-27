@@ -4,7 +4,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - "v*"
   #on: [push]
 jobs:
   build_latex:
