@@ -118,7 +118,7 @@ Se, no entanto, o somatório dos pesos das arestas fosse menor que 2, tanto \(S\
 Conhecer o \textit{min-cut} do grafo que representa as soluções fracionárias da relaxação linear do TSP torna-se, portanto, uma vantagem.
 
 \section{Algoritmos para obter o \textit{min-cut}}
-O algoritmo proposto por \cite{Stoer:1997:SMA:263867.263872} é simples e é capaz de encontrar o corte mínimo de um grafo de maneira exata. A heurística \textit{max-back} descrita em \cite{denisnaddef}, por sua vez, é mais rápida que o algoritmo exato, embora não garanta a obtenção do \textit{min-cut}. Apesar disso, para soluções inteiras, é garantido que o \textit{max-back} resolve o problema da separação.
+O algoritmo proposto por \cite{Stoer:1997:SMA:263867.263872} é simples, e é capaz de encontrar o corte mínimo de um grafo de maneira exata. A heurística \textit{max-back} descrita em \cite{denisnaddef}, por sua vez, é mais rápida que o algoritmo exato, embora não garanta a obtenção do \textit{min-cut}. Apesar disso, para soluções inteiras, é garantido que o \textit{max-back} resolve o problema da separação.
 
 Recomenda-se, primeiramente, o uso do \textit{max-back} na tentativa de detectar violações das restrições de \textit{subtour}. Se elas não forem encontradas, utiliza-se o algoritmo exato.
 
