@@ -11,12 +11,12 @@ jobs:
         with:
           root_file: main.tex
           latexmk_shell_escape: true
-            # - name: Upload PDF to the workflow tab
-            #   id: upload-workflow-tab
-            #   uses: actions/upload-artifact@v2
-            #   with:
-            #     name: output
-            #     path: main.pdf
+      - name: Upload PDF to the workflow tab
+        id: upload-workflow-tab
+        uses: actions/upload-artifact@v2
+        with:
+          name: main
+          path: main.pdf
       - name: Upload Release
         id: upload-release-asset
         if: startsWith(github.ref, 'refs/tags/')
