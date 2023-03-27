@@ -39,8 +39,14 @@ jobs:
           name: main
           path: main.pdf
 
-      - name: set env
-        run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
+     - name: Set the value
+      id: step_one
+      run: |
+      echo "action_state=yellow" >> $GITHUB_ENV
+     - name: Use the value
+      id: step_two
+      run: |
+      echo "${{ env.action_state }}" # This will output 'yellow'
 
       - name: Create Release
         id: create_release
