@@ -5,7 +5,12 @@ name: Build LaTeX document
   #       - main
   #     tags:
   #       - "*"
-on: [push]
+  # on: [push]
+  # on:
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build_latex:
