@@ -117,7 +117,26 @@ Se, no entanto, o somatório dos pesos das arestas fosse menor que 2, tanto \(S\
 
 Conhecer o \textit{min-cut} do grafo que representa as soluções fracionárias da relaxação linear do TSP torna-se, portanto, uma vantagem.
 
-\section{Algoritmos para obter o \textit{min-cut}}
-O algoritmo proposto por \cite{Stoer:1997:SMA:263867.263872} é simples, e é capaz de encontrar o corte mínimo de um grafo de forma exata. A heurística \textit{max-back} descrita em \cite{denisnaddef}, por sua vez, é mais rápida que o algoritmo exato, embora não garanta a obtenção do \textit{min-cut}. Apesar disso, para soluções inteiras, é garantido que o \textit{max-back} resolve o problema da separação.
+\section{Algoritmos para a obtenção do \textit{min-cut}}
 
-Recomenda-se, primeiramente, o uso do \textit{max-back} na tentativa de detectar violações das restrições de \textit{subtour}. Se elas não forem encontradas, utiliza-se o algoritmo exato.
+%O algoritmo proposto por \cite{Stoer:1997:SMA:263867.263872} é simples, e é capaz de encontrar o corte mínimo de um grafo de forma exata. A heurística \textit{max-back} descrita em \cite{denisnaddef}, por sua vez, é mais rápida que o algoritmo exato, embora não garanta a obtenção do \textit{min-cut}. Apesar disso, para soluções inteiras, é garantido que o \textit{max-back} resolve o problema da separação.
+
+%Recomenda-se, primeiramente, o uso do \textit{max-back} na tentativa de detectar violações das restrições de \textit{subtour}. Se elas não forem encontradas, utiliza-se o algoritmo exato.
+
+Nesta seção, serão descritos dois métodos para a obtenção do \textit{min-cut}. Precisamente, na Seção \ref{sec:maxBack}, será apresentada a heurística \textit{max-back} \cite{denisnaddef}, um método bastante eficiente para a obtenção de cortes que, embora não garanta a obtenção do corte mínimo, resolve o problema da separação para soluções inteiras. Por outro lado, na Seção \ref{sec:minCut}, é apresentado o algoritmo exato para obtenção do corte mínimo \cite{Stoer:1997:SMA:263867.263872}. Recomenda-se, primeiramente, o uso do \textit{max-back} na tentativa de detectar violações das restrições de \textit{subtour}. Se elas não forem encontradas, utiliza-se o algoritmo exato. Detalhes sobre a implementação serão discutidos na Seção \ref{sec:implementacao}.    
+
+\subsection{Heurística \textit{Max-back}} \label{sec:maxBack}
+
+\subsection{Algoritmo exato para o \textit{Min-cut}} \label{sec:minCut}
+
+\subsection{Implementação} \label{sec:implementacao}
+
+% Códigos importantes
+
+% 1 - Modelo sem as restrições de subtuor: arquivo main.cpp
+% 2 - Comandos do cplex para utilizar as callbacks: arquivo main.cpp
+% 3 - Função main da classe MyLazyCallback: arquivo MyLazyCallback.cpp
+% 4 - Função main da classe MyCutCallback: arquivo MyCutCallback.cpp
+% 5 - Função main da classe MyBranchCallback: arquivo MyBranchCallback.cpp
+
+% lstlistings: https://www.overleaf.com/learn/latex/Code_listing
