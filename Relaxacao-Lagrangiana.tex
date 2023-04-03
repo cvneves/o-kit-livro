@@ -70,7 +70,7 @@ Considere o ILP
 \end{align*}
 Relaxando-se a restrição de \eqref{eq:ilpExample}, obtém-se o novo ILP
 \begin{align*}
-	\min \left\{ 5x_1 + 4x_2 + 2x_3 + \lambda(5 - 2x_1 + 3x_2 + 4x_3) \mid (x_1,x_2,x_3) \in \{0,1\}^3 \right\}. \tag{PR$_\lambda$1}\label{eq:ilpExampleRelax}
+	\min \left\{ 5x_1 + 4x_2 + 2x_3 + \lambda(5 - (2x_1 + 3x_2 + 4x_3)) \mid (x_1,x_2,x_3) \in \{0,1\}^3 \right\}. \tag{PR$_\lambda$1}\label{eq:ilpExampleRelax}
 \end{align*} 
 
 Já que o problema original \eqref{eq:ilpExample} possui uma única restrição, que foi removida, sua relaxação possui um único penalizador $\lambda$ na função objetivo. A solução ótima de \eqref{eq:ilpExampleRelax} depende do valor do penalizador $\lambda$, que deve ser escolhido antes da resolução do problema. Se $\lambda = 0$, por exemplo, o valor ótimo é obtido fazendo-se $x_1 = x_2 = x_3 = 0$, tornando nulo o valor da função objetivo.
