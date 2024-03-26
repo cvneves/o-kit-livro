@@ -578,9 +578,16 @@ A Figura \ref{fig:estruturasVizinhancaExemplos} apresenta exemplos de movimentos
           \draw[-] (3*36:2) arc (3*36:6*36:2);
           \draw[-] (7*36:2) arc (7*36:8*36:2);
           
-          \draw[-] (a4) to (a5);
+          % \draw[-, dashed, red] (a4) to (a5);
+          % \draw[-, dashed, red] (a3) to (a6);
+          % \draw[-, dashed, red] (a10) to (a8);
+          
+          % \draw[-, blue] (a6) to (a8);
+          % \draw[-, blue] (a3) to (a4);
+          % \draw[-, blue] (a10) to (a5);
+          \draw[-] (a5) to (a10);
+          \draw[-] (a8) to (a4);
           \draw[-] (a3) to (a6);
-          \draw[-] (a10) to (a8);
         \end{tikzpicture}
         \label{fig:exemploEstruturaOrOpt2}}}
     \hspace{0.5cm}
@@ -602,9 +609,13 @@ A Figura \ref{fig:estruturasVizinhancaExemplos} apresenta exemplos de movimentos
           \draw[-] (3*36:2) arc (3*36:5*36:2);
           \draw[-] (6*36:2) arc (6*36:8*36:2);
           
-          \draw[-] (a4) to (a5);
+          % \draw[-, red] (a4) to (a5);
+          % \draw[-, red] (a9) to (a6);
+          % \draw[-, red] (a3) to (a8);
+
+          \draw[-] (a8) to (a4);
+          \draw[-] (a3) to (a5);
           \draw[-] (a9) to (a6);
-          \draw[-] (a3) to (a8);
         \end{tikzpicture}
         \label{fig:exemploEstruturaOrOpt3}}}
 

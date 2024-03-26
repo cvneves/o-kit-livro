@@ -1,6 +1,6 @@
 \chapter{Concatenação de subsequências}
 \thispagestyle{empty}
-O Problema da Mínima Latência (\textit{Minimum Latency Problem}, MLP) \referencia{} e o Problema de Roteamento de Veículos com Janelas de Tempo (\textit{Vehicle Routing Problem with Time Windows}, VRPTW) \referencia{} são exemplos problemas de otimização combinatória mais difíceis que o TSP. Parte dessas dificuldade reside em características especiais desses problemas, seja em termos de função objetivo ou de restrições. Tais diferenças tornam dificil avaliar o impacto de modificações na solução. No MLP, por exemplo, a aplicação de um movimento como o \textit{swap} pode alterar drasticamente o seu valor objetivo, que não pode mais ser calculado apenas somando e subtraindo custos de arestas, como no caso do TSP. No VRPTW, aplicar o mesmo movimento pode violar restrições do problema, exigindo uma avaliação prévia da sua viabilidade, que pode demandar muitas operações.
+O Problema da Mínima Latência (\textit{Minimum Latency Problem}, MLP) \referencia{} e o Problema de Roteamento de Veículos com Janelas de Tempo (\textit{Vehicle Routing Problem with Time Windows}, VRPTW) \referencia{} são exemplos problemas de otimização combinatória mais difíceis que o TSP. Parte dessa dificuldade reside em características especiais desses problemas, seja em termos de função objetivo ou de restrições. Tais diferenças tornam dificil avaliar o impacto de modificações na solução. No MLP, por exemplo, a aplicação de um movimento como o \textit{swap} pode alterar drasticamente o seu valor objetivo, que não pode mais ser calculado apenas somando e subtraindo custos de arestas, como no caso do TSP. No VRPTW, aplicar o mesmo movimento pode violar restrições do problema, exigindo uma avaliação prévia da sua viabilidade, que pode demandar muitas operações.
 
 Reavaliar o custo de movimentos ou checar a viabilidade de novas soluções durante as buscas locais de forma ingênua pode comprometer e, por vezes, inviabilizar o método. Este capítulo aborda o método de concatenação de subsequências, que permite realizar essas avaliações de maneira eficiente para uma vasta classe de problemas. Para isso, a aplicação do método será apresentada para o MLP e o VRPTW, definidos nas seções seguintes. Ao fim do capítulo, espera-se que o leitor seja capaz de empregar as mesmas técnicas do capítulo anterior para esses problemas de forma eficiente.
 
@@ -329,7 +329,7 @@ Uma algoritmo simples para resolver o MLP é descrito em \cite{SILVA2012513}. Pa
    end Construction
 \end{algorithm}
 
-A Tabela \ref{tab:mlpResults} contém os valores médios de custo acumulado e tempo (em segundos) de resolução das instâncias após 10 execuções do algoritmo em um Intel{\textregistered} Core{\texttrademark} i7 $2.93$ GHz. Durante os experimentos, os autores utilizaram os parâmetros $I_{Max} = 10$, $I_{ILS} = \min\{100,n\}$ e $R = \{0.00, 0.01, 0.02,\dots,0.25\}$.
+A Tabela \ref{tab:mlpResults} contém os valores médios de custo acumulado e tempo (em segundos) de resolução das instâncias após 10 execuções do algoritmo em um Intel{\textregistered} Core{\texttrademark} i7-12700 $2.10$ GHz. Durante os experimentos, utilizou-se os parâmetros $I_{Max} = 10$, $I_{ILS} = \min\{100,n\}$ e $R = \{0.00, 0.01, 0.02,\dots,0.25\}$.
  \begin{table}[!ht]
  \centering
  \caption{Resultados do método de \cite{SILVA2012513}.}
@@ -339,29 +339,29 @@ A Tabela \ref{tab:mlpResults} contém os valores médios de custo acumulado e te
 \multirow{2.5}{*}{\textbf{Instância}} & \multicolumn{2}{c}{\textbf{Resultados}} \\
 \cmidrule{2-3} & \textbf{Tempo} & \textbf{Custo} \\
 \midrule
-  \texttt{dantzig42}   & 0.16 & 12528.00 \\ 
-  \texttt{swiss42}   & 0.16 & 22327.00 \\ 
-  \texttt{att48}   & 0.32 & 209320.00 \\ 
-  \texttt{gr48}   & 0.33 & 102378.00 \\ 
-  \texttt{hk48}   & 0.30 & 247926.00 \\ 
-  \texttt{eil51}   & 0.49 & 10178.00 \\ 
-  \texttt{berlin52}   & 0.46 & 143721.00 \\ 
-  \texttt{brazil58}   & 0.78 & 512361.00 \\ 
-  \texttt{st70}   & 1.65 & 20557.00 \\ 
-  \texttt{eil76}   & 2.64 & 17976.00 \\ 
-  \texttt{pr76}   & 2.31 & 3455242.00 \\ 
-  \texttt{pr76r}   & 2.41 & 345427.00 \\ 
-  \texttt{gr96}   & 6.19 & 2097170.00 \\ 
-  \texttt{rat99}   & 11.27 & {57986.00} \\ 
-  \texttt{kroA100}   & 8.59 & 983128.00 \\ 
-  \texttt{kroB100}   & 9.21 & 986008.00 \\ 
-  \texttt{kroC100}   & 8.17 & 961324.00 \\ 
-  \texttt{kroD100}   & 8.46 & 976965.00 \\ 
-  \texttt{kroE100}   & 8.31 & 971266.00 \\ 
-  \texttt{rd100}   & 8.52 & 340047.00 \\ 
-  \texttt{eil101}   & 12.76 & {27513.00} \\ 
-  \texttt{lin105}   & 8.42 & 603910.00 \\ 
-  \texttt{pr107}   & 10.89 & 2026626.00 \\ 
+  \texttt{dantzig42}   & 0.03 & 12528.00 \\ 
+  \texttt{swiss42}   & 0.02 & 22327.00 \\ 
+  \texttt{att48}   & 0.06 & 209320.00 \\ 
+  \texttt{gr48}   & 0.05 & 102378.00 \\ 
+  \texttt{hk48}   & 0.06 & 247926.00 \\ 
+  \texttt{eil51}   & 0.09 & 10178.00 \\ 
+  \texttt{berlin52}   & 0.08 & 143721.00 \\ 
+  \texttt{brazil58}   & 0.11 & 512361.00 \\ 
+  \texttt{st70}   & 0.28 & 20557.00 \\ 
+  \texttt{eil76}   & 0.40 & 17976.00 \\ 
+  \texttt{pr76}   & 0.32 & 3455242.00 \\ 
+  %\texttt{pr76r}   & 2.41 & 345427.00 \\   tenho essa n
+  \texttt{gr96}   & 0.89 & 2097170.00 \\ 
+  \texttt{rat99}   & 1.64 & {57986.00} \\ 
+  \texttt{kroA100}   & 1.21 & 983128.00 \\ 
+  \texttt{kroB100}   & 1.24 & 986008.00 \\ 
+  \texttt{kroC100}   & 1.15 & 961324.00 \\ 
+  \texttt{kroD100}   & 1.14 & 976965.00 \\ 
+  \texttt{kroE100}   & 1.24 & 971266.00 \\ 
+  \texttt{rd100}   & 1.19 & 340047.00 \\ 
+  \texttt{eil101}   & 1.81 & {27518.70} \\ 
+  \texttt{lin105}   & 1.22 & 603910.00 \\ 
+  \texttt{pr107}   & 1.40 & 2026626.00 \\ 
 \bottomrule
  \end{tabular}
  \label{tab:mlpResults}
@@ -370,7 +370,11 @@ A Tabela \ref{tab:mlpResults} contém os valores médios de custo acumulado e te
  
  
 
+\iffalse
+
 \section{VRPTW}
 Seja $G = (V,A)$ um grafo direcionado em que $V$ e $A$ são os conjuntos de vértices e arcos, respectivamente. Tem-se que $V = V' \cup \{0\}$, onde o subconjunto $V' = \{1, \dots, n\}$ representa os clientes e o vértice $0$ é o depósito, e $A = \{ (i,j) \mid i \neq j \}$. O custo de viajar por um arco $(i,j)\in A$ é $c_{ij}$, e a matriz de custos satisfaz a desigualdade triangular. Cada vértice $i \in V$ possui um tempo de serviço $s_i$, uma janela de tempo $[w_i^a, w_i^b]$ e uma demanda $d_i$, sendo $d_0 = 0$. Há também um tempo de viagem $t_{ij}$ associado a cada arco $(i,j) \in A$. Dada uma frota homogênea e ilimitada de veículos de capacidade $C$, o problema consiste em determinar um conjunto de rotas de custo mínimo de modo que: (\textit{i}) cada rota deve começar no depósito, visitar um subconjunto dos clientes, e terminar no depósito; (\textit{ii}) a capacidade do veículo não pode ser excedida; (\textit{iii}) as janelas de tempo não devem ser violadas; (\textit{iv}) todo cliente deve ser visitado exatamente uma vez, tendo sua demanda suprida.
 
 \subsection{Estruturas auxiliares}
+
+\fi

@@ -127,13 +127,289 @@ Nesta seção, serão descritos dois métodos para a obtenção do \textit{min-c
 
 \subsection{Heurística \textit{Max-back}} \label{sec:maxBack}
 
+\begin{algorithm}[h]
+\DontPrintSemicolon
+\KwData{..}
+\KwResult{}
+\Begin{
+
+	\Return{} \;
+}
+\caption{\textsc{Max-back Heuristic}\label{alg:maxback}}
+\end{algorithm}
+
+
 \subsection{Algoritmo exato para o \textit{Min-cut}} \label{sec:minCut}
+
+\begin{algorithm}[h]
+\DontPrintSemicolon
+\KwData{..}
+\KwResult{}
+\Begin{
+
+	\Return{} \;
+}
+\caption{\textsc{Minimum Cut}\label{alg:maxback}}
+\end{algorithm}
 
 \subsection{Implementação} \label{sec:implementacao}
 
+Neste seção, estão ressaltados os principais trechos de código que compõem a implementação do algoritmo \textit{Branch-and-Cut} aplicado ao TSP. O Código \ref{cod:modeloTSP}, por exemplo, apresenta o modelo para o TSP sem as restrições de proibição de \textit{subtours}. Note que são definidas as variáveis associadas às arestas presentes no grafo, a função objetivo como a minimização da distância total percorrida e apenas as restrições de grau.  
+
+\begin{lstlisting}[style=cplusplusListStyle, caption= Modelo TSP sem as restrições de proibição de subtours, label=cod:modeloTSP]
+    IloEnv env;
+    IloModel model(env);
+
+    env.setName("Branch and Cut");
+    model.setName("Symmetrical Traveling Salesman Problem");
+
+    int dimension = data->getDimension();
+
+    /******** Creating one variable 'x' for each edge *******/
+    IloArray <IloBoolVarArray> x(env, dimension);
+
+    for (int i = 0; i < dimension; i++) {
+        IloBoolVarArray array(env, dimension);
+        x[i] = array;
+    }
+
+    /********** Adding variables 'x' to the model **********/
+    char var[100];
+    for (int i = 0; i < dimension; i++){
+        for (int j = i + 1; j < dimension; j++){
+            sprintf(var, "X(%d,%d)", i, j);
+            x[i][j].setName(var);
+            model.add(x[i][j]);
+        }
+    }
+    
+    /**************** Objective Function ******************/
+    IloExpr obj(env);
+    for (int i = 0; i < dimension; i++) {
+        for (int j = i + 1; j < dimension; j++) {
+            obj += data->getDistance(i, j)*x[i][j];
+        }
+    }
+    model.add(IloMinimize(env, obj));
+    
+    /******************** Constraints *********************/
+    IloRange r;
+    char name[100];
+
+    for (int i = 0; i < dimension; i++){
+        IloExpr sumX(env);
+        for (int j = 0; j < dimension; j++){
+            if (j < i){
+                sumX += x[j][i];
+            }
+            if (i < j){
+                sumX += x[i][j];
+            }
+        }
+        r = (sumX == 2);
+        sprintf(name, "c_%d", i);
+        r.setName(name);
+        model.add(r);
+    }
+\end{lstlisting}
+
+Definido o modelo, o próximo passo consiste na implementação dos cortes que proibirão soluções contendo \textit{subtours}. Para tanto, é preciso utilizar funções denominadas \textit{callbacks}. No escopo do resolvedor CPLEX, tais funções permitem que os usuários programem trechos de código que deverão ser executados durante a resolução do modelo \cite{CallbackCPLEX}. Precisamente, são utilizadas três classes de \textit{callbacks}, denominadas \emph{MyBranchCallback}, \emph{MyCutCallback} e \emph{MyLazyCallback}, cujos comandos para suas inicializações estão descritos no Código \ref{cod:comandosCallbacks}. 
+
+\begin{lstlisting}[style=cplusplusListStyle, caption= Comandos do CPLEX para a utilização das \textit{callbacks}, label=cod:comandosCallbacks]
+    // [...]
+    
+    IloCplex STSP(model);
+    
+    /********** Creating Branch Callback Object ***********/
+    MyBranchCallback* branchCbk = new (env) MyBranchCallback(env);
+    STSP.use(branchCbk);
+
+    /************ Creating Cut Callback Object ************/
+    MyCutCallback* cutCbk = new (env) MyCutCallback(env, x_ref, dimension);
+    STSP.use(cutCbk);
+
+    /************ Creating Lazy Callback Object ***********/
+    MyLazyCallback* lazyCbk = new (env) MyLazyCallback(env, x_ref, dimension);
+    STSP.use(lazyCbk);
+    
+    /**************** Cleaning the memory *****************/
+    delete branchCbk;
+    delete cutCbk;
+    delete lazyCbk;
+    env.end();
+
+    // [...]
+\end{lstlisting}
+
+A classe \emph{MyBranchCallback} é utilizada para {\color{red}[...]}
+
+\begin{lstlisting}[style=cplusplusListStyle, caption= Código referente à  classe \emph{MyBranchCallback}, label=cod:branchCallback]
+MyBranchCallback::MyBranchCallback(IloEnv env) : IloCplex::BranchCallbackI(env) {}   
+
+// returns a copy of the callback. Required by CPLEX
+IloCplex::CallbackI* MyBranchCallback::duplicateCallback() const 
+{ 
+   return new (getEnv()) MyBranchCallback(getEnv()); 
+}   
+
+void MyBranchCallback::main()
+{
+	// How many branches would CPLEX create? 
+	IloInt const nbranch = getNbranches(); 
+
+	if(nbranch > 0){ 
+		// CPLEX would branch. Get the branches CPLEX would create 
+		// and create exactly those branches. With each branch store 
+		// its NodeInfo. 
+		// Note that getNodeData() returns NULL for the root node. 
+		NodeInfo *data = dynamic_cast<NodeInfo *>(getNodeData()); 
+		unsigned int depth;
+   
+		if(!data){
+		   	// se entrou aqui e porque o no atual e a raiz. Cplex nao guarda NodeInfo para a raiz, por isso o metodo acima retorna NULL.
+			// O NodeInfo da raiz e um objeto estatico da classe NodeInfo. Abaixo, verifica-se se objeto ja foi construido e aponta-se o ponteiro data para ele.
+			if(NodeInfo::rootData == NULL){
+				NodeInfo::initRootData();
+			}
+			data = NodeInfo::rootData;
+		}
+
+		depth = data->getDepth();
+
+		IloNumVarArray vars(getEnv());
+		IloNumArray bounds(getEnv()); 
+		IloCplex::BranchDirectionArray dirs(getEnv());   
+
+		//cria as mesmas branches que o cplex criaria, mas coloca o NodeInfo.
+		for(IloInt i = 0; i < nbranch; ++i){ 
+			IloNum const est = getBranch(vars, bounds, dirs, i);
+			makeBranch(vars, bounds, dirs, est, new NodeInfo(depth + 1U)); 
+		} 
+
+		dirs.end(); 
+		bounds.end(); 
+		vars.end(); 
+   } 
+   else{ 
+		// CPLEX would not create any branch here. Prune the node. 
+		prune(); 
+   } 
+}
+
+\end{lstlisting}
+
+Por sua vez, a classe \emph{MyCutCallback} tem por finalidade {\color{red}[...]}
+
+\begin{lstlisting}[style=cplusplusListStyle, caption= Código referente à  classe \emph{MyCutCallback}, label=cod:cutCallback]
+
+/************************ Class' Constructor ************************/
+MyCutCallback::MyCutCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_ref, int nodes) : IloCplex::UserCutCallbackI(env), x(x_ref), x_vars(env), n(nodes)
+{
+	/********** Filling x_vars **********/ 
+	for(int i = 0; i < n; i++) {
+		for(int j = i + 1; j < n; j++){
+			x_vars.add(x[i][j]);
+		}
+	}
+	/************************************/
+} 
+
+/****** Return a callback copy. This method is a CPLEX requirement ******/
+IloCplex::CallbackI* MyCutCallback::duplicateCallback() const 
+{ 
+   return new (getEnv()) MyCutCallback(getEnv(), x, n); 
+}
+
+/**************** Callback's code that is runned by CPLEX ***************/
+void MyCutCallback::main() 
+{
+	/**************** Getting the node's depth ****************/
+	//int depth = 0;
+	/*NodeInfo *data = dynamic_cast<NodeInfo*>(getNodeData());
+
+	if (!data){
+        if (NodeInfo::rootData == NULL)
+            NodeInfo::initRootData();
+        
+		data = NodeInfo::rootData;
+    }
+	if (data) {
+		depth = data->getDepth();
+	}*/
+	int depth = getCurrentNodeDepth();
+	/**********************************************************/
+
+	/********** Getting the relaxed variables values **********/
+	IloNumArray x_vals(getEnv(), (0.5*(n)*(n-1)));
+	getValues(x_vals, x_vars);
+	/**********************************************************/
+
+	vector< vector<int> > cutSetPool;
+	vector<IloConstraint> cons; 
+
+	double **x_edge = new double*[n];
+ 
+	for (int i = 0; i < n; i++) {
+		x_edge[i] = new double[n];
+	}
+
+	int l = 0;
+	for(int i = 0; i < n; i++) {
+		for(int j = i+1; j < n; j++) {
+			x_edge[i][j] = x_vals[l++];
+		}
+	}
+	
+	cutSetPool = MaxBack(x_edge, n);
+	
+	if (cutSetPool.empty() && depth <= 7) {
+		cutSetPool = MinCut(x_edge, n);
+		//cutSetPool = MultipleMinCut(x_edge, n);
+	}
+
+	/***************** Creating the constraints ***************/
+	if (!cutSetPool.empty()){
+		for (int c = 0; c < cutSetPool.size(); c++) {
+			IloExpr p(getEnv());
+			for(int i = 0; i < cutSetPool[c].size(); i++){
+				for(int j = 0; j < cutSetPool[c].size(); j++){
+					if(cutSetPool[c][i] < cutSetPool[c][j]){
+						p += x[cutSetPool[c][i]][cutSetPool[c][j]];
+					}
+				}
+			}
+			int RHS = cutSetPool[c].size();
+			cons.push_back(p <= RHS - 1);
+		}
+		/*********** Adding the constraints to the model **********/
+		for(int i = 0; i < cons.size(); i++){
+			add(cons.at(i)).end();
+		}
+		/**********************************************************/
+	}
+	/**********************************************************/
+
+	/******************* Cleaning the memory ******************/
+	for (int i = 0; i < n; i++) {
+		delete[] x_edge[i];
+	}
+	delete[] x_edge;
+	/**********************************************************/
+}
+
+\end{lstlisting}
+
+Por fim, a classe \emph{MyLazyCallback} é necessária para {\color{red}[...]}
+
+\begin{lstlisting}[style=cplusplusListStyle, caption= Código referente à  classe \emph{MyLazyCallback}, label=cod:lazyCallback]
+
+\end{lstlisting}
+
+{\color{red}Encerrar com um parágrafo de conclusão e indicando onde encontrar o código referente a estrutura completa (que está sendo compartilhado como arquivo zip por e-maail atualmente).}
+
 % Códigos importantes
 
-% 1 - Modelo sem as restrições de subtuor: arquivo main.cpp
+% 1 - Modelo sem as restrições de subtour: arquivo main.cpp
 % 2 - Comandos do cplex para utilizar as callbacks: arquivo main.cpp
 % 3 - Função main da classe MyLazyCallback: arquivo MyLazyCallback.cpp
 % 4 - Função main da classe MyCutCallback: arquivo MyCutCallback.cpp
