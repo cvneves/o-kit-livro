@@ -30,7 +30,7 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
-          latexmk_shell_escape: true
+          latexmk_shell_escape: false
 
       - name: Upload PDF to the workflow tab
         id: upload-workflow-tab
